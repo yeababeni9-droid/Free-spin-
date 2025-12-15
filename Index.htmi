@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spin Wheel Game</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  #wheel {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 5px solid #333;
+    position: relative;
+    margin: 20px auto;
+    overflow: hidden;
+  }
+
+  .segment {
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    transform-origin: 100% 100%;
+    text-align: right;
+    padding-right: 10px;
+    box-sizing: border-box;
+    font-weight: bold;
+  }
+
+  #spinButton {
+    padding: 10px 20px;
+    font-size: 20px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+
+  #result {
+    margin-top: 20px;
+    font-size: 24px;
+    color: red;
+  }
+
+  input {
+    padding: 5px;
+    width: 300px;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Spin the Wheel!</h1>
+
+<!-- User can adjust prizes and message -->
+<div>
+  <p>Enter prizes separated by commas:</p>
+  <input id="prizesInput" value="10k ETB,Tebeda,iPhone 14 Pro Max,Avacline to goon,Wtta dikala,100k ETB">
+  <p>Enter the message when they win:</p>
+  <input id="winMessageInput" value="TEBEDA 😅">
+</div>
+
+<div id="wheel"></div>
+<button id="spinButton">Spin</button>
+<div id="result"></div>
+
+<script>
+const wheelContainer = document.getElementById('wheel');
+const spinButton = document.getElementById('spinButton');
+const result = document.getElementById('result');
+const prizesInput = document.getElementById('prizesInput');
+const winMessageInput = document.getElementById('winMessageInput');
+
+function createWheel(prizes) {
+  wheelContainer.innerHTML = ''; // Clear previous segments
+  const segmentAngle = 360 / prizes.length;
+
+  prizes.forEach((prize, index) => {
+    const segment = document.createElement('div');
+    segment.className = 'segment';
+    segment.style.transform = `rotate(${index * segmentAngle}deg)`;
+    segment.style.background = index % 2 === 0 ? '#ffcc00' : '#00ccff';
+    segment.textContent = prize;
+    wheelContainer.appendChild(segment);
+  });
+}
+
+function getPrizes() {
+  return prizesInput.value.split(',').map(p => p.trim());
+}
+
+// Initial wheel setup
+createWheel(getPrizes());
+
+spinButton.addEventListener('click', () => {
+  const prizes = getPrizes();
+  const winMessage = winMessageInput.value;
+  result.textContent = "Spinning...";
+
+  const randomIndex = Math.floor(Math.random() * prizes.length);
+  const randomDegree = 720 + randomIndex * (360 / prizes.length) + (360 / prizes.length)/2;
+
+  wheelContainer.style.transition = 'transform 3s ease-out';
+  wheelContainer.style.transform = `rotate(${randomDegree}deg)`;
+
+  setTimeout(() => {
+    result.textContent = winMessage;
+  }, 3000);
+});
+</script>
+
+</body>
+</html>
